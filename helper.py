@@ -70,3 +70,4 @@ def do_to_database(command: str, *options):
             create_log(e, code="error")
             sleep(1)
             continue
+

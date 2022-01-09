@@ -2,16 +2,21 @@ from typing import Union
 import nextcord
 import json
 from nextcord.ext import commands
+from nextcord.webhook import async_
 from helper import *
-import ast
 
 json_data = json.load(open("config.json", "r"))
 
 bot = commands.Bot(command_prefix=json_data["prefix"], case_insensitive=True, strip_after_prefix=True)
 
 @bot.event
+async def on_error(err, *args, **kwargs):
+    create_log(f"{err}: *args={args}, **kwargs={kwargs}", "error")
+
+@bot.event
 async def on_ready():
-    print("Ready!")
+    start_logging()
+    create_log("Ready!")
 
 @bot.command(name="аниме")
 async def anime(ctx: commands.Context):
@@ -90,5 +95,9 @@ async def film(ctx: commands.Context):
 
         await mess.edit(embed=BuildEmbed(title=animes[ids][1], desc=animes[ids][2], image=animes[ids][3]))
         await mess.clear_reactions()
+
+@bot.command()
+async def error(ctx):
+    1 / 0
 
 bot.run(json_data["token"])
